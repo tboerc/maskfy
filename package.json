@@ -2,11 +2,33 @@
   "name": "@tboerc/maskfy",
   "version": "1.0.0",
   "description": "Pure javascript mask plugin to use anywhere",
+  "types": "lib/index.d.ts",
   "main": "lib/index.js",
-  "repository": "https://github.com/tboerc/maskfy.git",
+  "scripts": {
+    "build": "tsc",
+    "start": "ts-node-dev src",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tboerc/maskfy.git"
+  },
+  "keywords": [
+    "mask"
+  ],
   "author": "tboerc",
   "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tboerc/maskfy/issues"
+  },
+  "homepage": "https://github.com/tboerc/maskfy/#readme",
   "devDependencies": {
+    "prettier": "^2.1.2",
+    "ts-node-dev": "^1.0.0-pre.63",
     "typescript": "^4.0.3"
-  }
+  },
+  "files": [
+    "lib/**/*"
+  ]
 }
