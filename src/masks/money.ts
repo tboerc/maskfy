@@ -58,12 +58,12 @@ const toMoney = (value: string, settings: any) => {
 };
 
 const money = {
-  value: (value: string | number, settings?: Settings) => {
+  value: (value: string | number = '', settings?: Settings) => {
     const merged = helpers.mergeSettings(DEFAULT_SETTINGS, settings);
     const sanitized = sanitize(value, merged.precision);
     return toMoney(sanitized, merged);
   },
-  raw: (value: string, settings?: Settings) => {
+  raw: (value: string = '', settings?: Settings) => {
     const merged = helpers.mergeSettings(DEFAULT_SETTINGS, settings);
 
     let cleaned = helpers.toNumber(value);
@@ -72,7 +72,7 @@ const money = {
     cleaned = insert(cleaned, postion);
     return +cleaned;
   },
-  validate: (value: string, settings?: Settings) => {
+  validate: (value: string = '', settings?: Settings) => {
     const merged = helpers.mergeSettings(DEFAULT_SETTINGS, settings);
     return value.length > merged.precision + merged.unit.length + merged.suffixUnit.length;
   },

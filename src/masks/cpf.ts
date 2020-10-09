@@ -1,4 +1,5 @@
 import custom from './custom';
+import helpers from './helpers';
 
 const ZERO_TO_NINE = Array.from({length: 9}, (_, i) => i);
 
@@ -34,7 +35,7 @@ const validate = (cpf: string = '') => {
 
 const cpf = {
   validate,
-  raw: (value: string = '') => custom.value(value, '99999999999'),
+  raw: (value: string = '') => helpers.toNumber(value),
   value: (value: string = '') => custom.value(value, '999.999.999-99'),
 };
 
