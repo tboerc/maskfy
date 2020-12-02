@@ -1,7 +1,7 @@
 {
   "name": "@tboerc/maskfy",
-  "version": "1.0.0",
-  "description": "Pure javascript mask plugin to use anywhere",
+  "version": "1.0.1",
+  "description": "Pure javascript mask plugin to use anywhere you like",
   "types": "lib/index.d.ts",
   "main": "lib/index.js",
   "scripts": {
@@ -15,7 +15,13 @@
     "url": "git+https://github.com/tboerc/maskfy.git"
   },
   "keywords": [
-    "mask"
+    "text",
+    "mask",
+    "format",
+    "node",
+    "react",
+    "custom",
+    "react-native"
   ],
   "author": "tboerc",
   "license": "MIT",
