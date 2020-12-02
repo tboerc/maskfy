@@ -16,8 +16,17 @@ const DEFAULT_SETTINGS: Settings = {
   suffixUnit: '',
 };
 
-const sanitize = (value: string | number, precision: number) => {
-  if (typeof value === 'number') return value.toFixed(precision);
+const sanitize = (value: string | number, precision: number, delimiter: string) => {
+  if (typeof value === 'number') {
+    return value.toFixed(precision);
+  }
+
+  const index = value.indexOf(delimiter);
+
+  if (index > 0) {
+    return value.slice(0, index + 1 + precision);
+  }
+
   return value;
 };
 
@@ -60,7 +69,7 @@ const toMoney = (value: string, settings: any) => {
 const money = {
   value: (value: string | number = '', settings?: Settings) => {
     const merged = helpers.mergeSettings(DEFAULT_SETTINGS, settings);
-    const sanitized = sanitize(value, merged.precision);
+    const sanitized = sanitize(value, merged.precision, merged.delimiter);
     return toMoney(sanitized, merged);
   },
   raw: (value: string = '', settings?: Settings) => {
