@@ -21,12 +21,6 @@ const sanitize = (value: string | number, precision: number, delimiter: string) 
     return value.toFixed(precision);
   }
 
-  const index = value.indexOf(delimiter);
-
-  if (index > 0) {
-    return value.slice(0, index + 1 + precision);
-  }
-
   return value;
 };
 
