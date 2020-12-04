@@ -68,7 +68,7 @@ Return the string without any applied mask. Sometimes you can provide custom set
 
 Tries to validate the string following some simple rules, generaly is based on the length of mask. But in some cases have complex validations, like in CPF mask.
 
-### Mask.custom(string, mask)
+### Mask.custom.value(string, mask)
 
 If you need to use a custom mask, you can use the `custom` method. Just pass your string and the mask pattern to apply over it. The pattern rules are defined bellow.
 
