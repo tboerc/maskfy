@@ -10,6 +10,7 @@ const config: Config = {
   },
   input: 'src/index.ts',
   output: {
+    minify: true,
     format: ['cjs', 'esm'],
   },
 };
