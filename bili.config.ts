@@ -9,9 +9,11 @@ const config: Config = {
     },
   },
   input: 'src/index.ts',
+  babel: {
+    minimal: true,
+  },
   output: {
     minify: true,
-    format: ['cjs', 'esm'],
   },
 };
 
