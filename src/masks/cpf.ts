@@ -1,36 +1,52 @@
 import custom from './custom';
 import helpers from './helpers';
 
-const ZERO_TO_NINE = Array.from({length: 9}, (_, i) => i);
+const BLACKLIST: Array<string> = [
+  '00000000000',
+  '11111111111',
+  '22222222222',
+  '33333333333',
+  '44444444444',
+  '55555555555',
+  '66666666666',
+  '77777777777',
+  '88888888888',
+  '99999999999',
+  '12345678909',
+];
+
+const verifierDigit = (digits: string): number => {
+  const numbers: Array<number> = digits.split('').map((number) => {
+    return parseInt(number, 10);
+  });
+
+  const modulus: number = numbers.length + 1;
+  const multiplied: Array<number> = numbers.map((number, index) => number * (modulus - index));
+  const mod: number = multiplied.reduce((buffer, number) => buffer + number) % 11;
+
+  return mod < 2 ? 0 : 11 - mod;
+};
 
 const validate = (cpf: string = '') => {
-  try {
-    if (!(cpf.length === 14 || cpf.length === 11)) return false;
+  const stripped: string = helpers.toNumber(cpf);
 
-    const cpf_number = cpf
-      .replace(/\./gi, '')
-      .replace(/-/gi, '')
-      .split('')
-      .map((v) => +v);
-
-    if (ZERO_TO_NINE.some((i) => cpf_number.every((v) => v === i))) throw new Error();
-
-    let soma = cpf_number.slice(0, 9).reduce((prev, curr, index) => prev + curr * (10 - index), 0);
-    let resto = (soma * 10) % 11;
-
-    if (resto === 10 || resto === 11) resto = 0;
-    if (resto !== cpf_number[9]) return false;
-
-    soma = cpf_number.slice(0, 10).reduce((prev, curr, index) => prev + curr * (11 - index), 0);
-    resto = (soma * 10) % 11;
-
-    if (resto === 10 || resto === 11) resto = 0;
-    if (resto !== cpf_number[10]) return false;
-
-    return true;
-  } catch (e) {
+  if (!stripped) {
     return false;
   }
+
+  if (stripped.length !== 11) {
+    return false;
+  }
+
+  if (BLACKLIST.includes(stripped)) {
+    return false;
+  }
+
+  let numbers: string = stripped.substr(0, 9);
+  numbers += verifierDigit(numbers);
+  numbers += verifierDigit(numbers);
+
+  return numbers.substr(-2) === stripped.substr(-2);
 };
 
 const cpf = {
