@@ -14,6 +14,9 @@ const config: Config = {
   },
   output: {
     minify: true,
+    sourceMap: false,
+    format: 'esm-min',
+    fileName: 'index.js',
   },
 };
 
