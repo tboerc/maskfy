@@ -1,10 +1,8 @@
-import custom from './custom';
-import helpers from './helpers';
+import * as custom from './custom';
+import {toNumber} from './helpers';
 
-const cep = {
-  validate: (value: string = '') => value.length === 9,
-  raw: (value: string = '') => helpers.toNumber(value),
-  value: (value: string = '') => custom.value(value, '99999-999'),
-};
+export const validate = (s = '') => s.length === 9;
 
-export default cep;
+export const raw = (s = '') => toNumber(s);
+
+export const value = (s = '') => custom.value(s, '99999-999');

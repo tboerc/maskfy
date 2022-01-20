@@ -1,13 +1,11 @@
-type MaskTransalation = {[key: string]: (val: string) => string};
-
-const DEFAULT_TRANSLATION: MaskTransalation = {
-  '*': (val) => val,
-  '9': (val) => val.replace(/[^0-9]+/g, ''),
-  A: (val) => val.replace(/[^a-zA-Z]+/g, ''),
-  S: (val) => val.replace(/[^a-zA-Z0-9]+/g, ''),
+const TRANSLATION: Record<string, (s: string) => string> = {
+  '*': val => val,
+  '9': val => val.replace(/[^0-9]+/g, ''),
+  A: val => val.replace(/[^a-zA-Z]+/g, ''),
+  S: val => val.replace(/[^a-zA-Z0-9]+/g, ''),
 };
 
-const toPattern = (value: string, mask: string, translation = DEFAULT_TRANSLATION) => {
+const toPattern = (value: string, mask: string) => {
   let result = '';
   let maskCharIndex = 0;
   let valueCharIndex = 0;
@@ -28,7 +26,7 @@ const toPattern = (value: string, mask: string, translation = DEFAULT_TRANSLATIO
     }
 
     // apply translator if match
-    const translationHandler = translation[maskChar];
+    const translationHandler = TRANSLATION[maskChar];
 
     if (!translationHandler) {
       // not masked value, fixed char on mask
@@ -55,12 +53,8 @@ const toPattern = (value: string, mask: string, translation = DEFAULT_TRANSLATIO
   return result;
 };
 
-const custom = {
-  value: (value: string, mask: string, translation?: MaskTransalation) => {
-    if (value === '') return value;
-    const masked = toPattern(value, mask, translation);
-    return masked;
-  },
+export const value = (value = '', mask = '') => {
+  if (value === '') return value;
+  const masked = toPattern(value, mask);
+  return masked;
 };
-
-export default custom;

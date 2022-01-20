@@ -1,5 +1,5 @@
-import custom from './custom';
-import helpers from './helpers';
+import * as custom from './custom';
+import {toNumber} from './helpers';
 
 const BLACKLIST: Array<string> = [
   '00000000000000',
@@ -14,24 +14,26 @@ const BLACKLIST: Array<string> = [
   '99999999999999',
 ];
 
-const verifierDigit = (digits: string): number => {
-  let index: number = 2;
-  const reverse: Array<number> = digits.split('').reduce((buffer: Array<number>, number) => {
-    return [parseInt(number, 10)].concat(buffer);
+const verifierDigit = (digits: string) => {
+  let index = 2;
+
+  const reverse: Array<number> = digits.split('').reduce((prev: number[], curr) => {
+    return [parseInt(curr, 10)].concat(prev);
   }, []);
 
-  const sum: number = reverse.reduce((buffer, number) => {
-    buffer += number * index;
+  const sum = reverse.reduce((prev, curr) => {
+    prev += curr * index;
     index = index === 9 ? 2 : index + 1;
-    return buffer;
+    return prev;
   }, 0);
 
-  const mod: number = sum % 11;
+  const mod = sum % 11;
+
   return mod < 2 ? 0 : 11 - mod;
 };
 
-const validate = (value: string = '') => {
-  const stripped: string = helpers.toNumber(value);
+export const validate = (s: '') => {
+  const stripped = toNumber(s);
 
   if (!stripped) {
     return false;
@@ -45,17 +47,13 @@ const validate = (value: string = '') => {
     return false;
   }
 
-  let numbers: string = stripped.substr(0, 12);
+  let numbers = stripped.substring(0, 12);
   numbers += verifierDigit(numbers);
   numbers += verifierDigit(numbers);
 
-  return numbers.substr(-2) === stripped.substr(-2);
+  return numbers.substring(-2) === stripped.substring(-2);
 };
 
-const cnpj = {
-  validate,
-  raw: (value: string = '') => helpers.toNumber(value),
-  value: (value: string = '') => custom.value(value, '99.999.999/9999-99'),
-};
+export const raw = (s = '') => toNumber(s);
 
-export default cnpj;
+export const value = (s = '') => custom.value(s, '99.999.999/9999-99');

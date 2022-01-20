@@ -1,5 +1,5 @@
-import custom from './custom';
-import helpers from './helpers';
+import * as custom from './custom';
+import {toNumber} from './helpers';
 
 const BLACKLIST: Array<string> = [
   '00000000000',
@@ -16,19 +16,19 @@ const BLACKLIST: Array<string> = [
 ];
 
 const verifierDigit = (digits: string): number => {
-  const numbers: Array<number> = digits.split('').map((number) => {
+  const numbers = digits.split('').map(number => {
     return parseInt(number, 10);
   });
 
-  const modulus: number = numbers.length + 1;
-  const multiplied: Array<number> = numbers.map((number, index) => number * (modulus - index));
-  const mod: number = multiplied.reduce((buffer, number) => buffer + number) % 11;
+  const modulus = numbers.length + 1;
+  const multiplied = numbers.map((number, index) => number * (modulus - index));
+  const mod = multiplied.reduce((prev, curr) => prev + curr) % 11;
 
   return mod < 2 ? 0 : 11 - mod;
 };
 
-const validate = (cpf: string = '') => {
-  const stripped: string = helpers.toNumber(cpf);
+export const validate = (s = '') => {
+  const stripped = toNumber(s);
 
   if (!stripped) {
     return false;
@@ -42,17 +42,13 @@ const validate = (cpf: string = '') => {
     return false;
   }
 
-  let numbers: string = stripped.substr(0, 9);
+  let numbers = stripped.substring(0, 9);
   numbers += verifierDigit(numbers);
   numbers += verifierDigit(numbers);
 
-  return numbers.substr(-2) === stripped.substr(-2);
+  return numbers.substring(-2) === stripped.substring(-2);
 };
 
-const cpf = {
-  validate,
-  raw: (value: string = '') => helpers.toNumber(value),
-  value: (value: string = '') => custom.value(value, '999.999.999-99'),
-};
+export const raw = (s = '') => toNumber(s);
 
-export default cpf;
+export const value = (s = '') => custom.value(s, '999.999.999-99');

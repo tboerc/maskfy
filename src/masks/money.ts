@@ -1,4 +1,4 @@
-import helpers from './helpers';
+import {mergeSettings, toNumber} from './helpers';
 
 type Settings = {
   precision?: number;
@@ -16,29 +16,28 @@ const DEFAULT_SETTINGS: Settings = {
   suffixUnit: '',
 };
 
-const sanitize = (value: string | number, precision: number, delimiter: string) => {
+const sanitize = (value: string | number, precision: number) => {
   if (typeof value === 'number') {
     return value.toFixed(precision);
   }
-
   return value;
 };
 
-const insert = (text: string, index: number) => {
-  if (index > 0) return text.substring(0, index) + '.' + text.substring(index, text.length);
-  else return '.' + text;
+const insert = (s: string, index: number) => {
+  if (index > 0) return s.substring(0, index) + '.' + s.substring(index, s.length);
+  else return '.' + s;
 };
 
-const toMoney = (value: string, settings: any) => {
-  const number = value.toString().replace(/[\D]/g, ''),
-    clearDelimiter = new RegExp('^(0|\\' + settings.delimiter + ')'),
-    clearSeparator = new RegExp('(\\' + settings.separator + ')$');
+const toMoney = (s: string, settings: Required<Settings>) => {
+  const number = s.toString().replace(/[\D]/g, ''),
+    clearSeparator = new RegExp('(\\' + settings.separator + ')$'),
+    clearDelimiter = new RegExp('^(0|\\' + settings.delimiter + ')');
 
-  let money = number.substr(0, number.length - settings.precision),
-    masked = money.substr(0, money.length % 3),
+  let money = number.substring(0, number.length - settings.precision),
+    masked = money.substring(0, money.length % 3),
     cents = new Array(settings.precision + 1).join('0');
 
-  money = money.substr(money.length % 3, money.length);
+  money = money.substring(money.length % 3, money.length);
 
   for (let i = 0, len = money.length; i < len; i++) {
     if (i % 3 === 0) masked += settings.delimiter;
@@ -49,7 +48,7 @@ const toMoney = (value: string, settings: any) => {
   masked = masked.length ? masked : '0';
 
   const beginCents = number.length - settings.precision,
-    centsValue = number.substr(beginCents, settings.precision),
+    centsValue = number.substring(beginCents, settings.precision),
     centsLength = centsValue.length,
     centsSliced = settings.precision > centsLength ? settings.precision : centsLength;
 
@@ -60,25 +59,21 @@ const toMoney = (value: string, settings: any) => {
   return output.replace(clearSeparator, '');
 };
 
-const money = {
-  value: (value: string | number = '', settings?: Settings) => {
-    const merged = helpers.mergeSettings(DEFAULT_SETTINGS, settings);
-    const sanitized = sanitize(value, merged.precision, merged.delimiter);
-    return toMoney(sanitized, merged);
-  },
-  raw: (value: string = '', settings?: Settings) => {
-    const merged = helpers.mergeSettings(DEFAULT_SETTINGS, settings);
+export const value = (value: string | number = '', settings?: Settings) => {
+  const merged = mergeSettings(DEFAULT_SETTINGS, settings);
+  const sanitized = sanitize(value, merged.precision);
 
-    let cleaned = helpers.toNumber(value);
-    const postion = cleaned.length - merged.precision;
-
-    cleaned = insert(cleaned, postion);
-    return +cleaned;
-  },
-  validate: (value: string = '', settings?: Settings) => {
-    const merged = helpers.mergeSettings(DEFAULT_SETTINGS, settings);
-    return value.length > merged.precision + merged.unit.length + merged.suffixUnit.length;
-  },
+  return toMoney(sanitized, merged);
 };
 
-export default money;
+export const raw = (value = '', settings?: Settings) => {
+  const merged = mergeSettings(DEFAULT_SETTINGS, settings);
+  const cleaned = toNumber(value);
+
+  return +insert(cleaned, cleaned.length - merged.precision);
+};
+
+export const validate = (value = '', settings?: Settings) => {
+  const merged = mergeSettings(DEFAULT_SETTINGS, settings);
+  return value.length > merged.precision + merged.unit.length + merged.suffixUnit.length;
+};

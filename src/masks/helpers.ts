@@ -1,11 +1,3 @@
-type Object = {[key: string]: any};
+export const toNumber = (v = '') => v.replace(/(?!^-)[^0-9]/g, '');
 
-const helpers = {
-  toNumber: (value: string) => value.replace(/(?!^-)[^0-9]/g, ''),
-
-  mergeSettings: (obj1: Object = {}, obj2: Object = {}) => {
-    return {...obj1, ...obj2};
-  },
-};
-
-export default helpers;
+export const mergeSettings = <T extends Record<string, any>>(obj1: T, obj2?: T) => ({...obj1, ...obj2} as Required<T>);
