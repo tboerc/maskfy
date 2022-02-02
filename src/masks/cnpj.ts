@@ -32,7 +32,7 @@ const verifierDigit = (digits: string) => {
   return mod < 2 ? 0 : 11 - mod;
 };
 
-export const validate = (s: '') => {
+export const validate = (s = '') => {
   const stripped = toNumber(s);
 
   if (!stripped) {
